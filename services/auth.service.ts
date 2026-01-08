@@ -2,15 +2,17 @@ import { User } from "@/models/User";
 import { comparePasswords, hashPassword } from "@/lib/helper";
 import { signAccessToken, signRefreshToken } from "@/lib/jwt";
 
-export async function signupUser(email: string, password: string) {
-	const existingUser = await User.findOne({ email });
-	if (existingUser) {
+export async function signupUser(username: string, email: string, password: string) {
+	const existingEmail = await User.findOne({ email });
+	const existingUsername = await User.findOne({ username });
+	if (existingEmail || existingUsername) {
 		throw new Error("User already exists");
 	}
 
 	const hashedPassword = await hashPassword(password);
 
 	const newUser = await User.create({
+		username,
 		email,
 		password: hashedPassword,
 	});
@@ -18,8 +20,8 @@ export async function signupUser(email: string, password: string) {
 	return newUser;
 }
 
-export async function loginUser(email: string, password: string) {
-	const user = await User.findOne({ email });
+export async function loginUser(username: string, password: string) {
+	const user = await User.findOne({ username });
 	if (!user) {
 		throw new Error("User does not exist");
 	}
@@ -41,7 +43,7 @@ export async function loginUser(email: string, password: string) {
 	return {
 		user: {
 			id: user._id.toString(),
-			email: user.email,
+			username: user.username,
 		},
 		accessToken,
 		refreshToken,

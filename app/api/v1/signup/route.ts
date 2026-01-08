@@ -17,12 +17,17 @@ export async function POST(request: Request) {
 		}
 
 		const newUser = await signupUser(
+			parsed.data.username,
 			parsed.data.email,
 			parsed.data.password
 		);
 
+		console.log("New user created:", newUser);
 		return NextResponse.json(
-			{ message: "User created successfully", userId: newUser.id },
+			{
+				message: "User created successfully",
+				userId: newUser.id
+			},
 			{ status: 201 }
 		);
 
