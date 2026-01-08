@@ -23,14 +23,21 @@ export const signUpSchema = z.object({
 	
 	email: z.email("Invalid email address"),
 	password: z.string()
-		.min(8, "Password must be at least 8 characters long")
-		.max(20, "Password must be at most 20 characters long"),
+	.min(8, "Password must be at least 8 characters long")
+	.max(20, "Password must be at most 20 characters long"),
 });
 export type SignupInput = z.infer<typeof signUpSchema>;
 
 export const logInSchema = z.object({
-	email: z.email(),
-	password: z.string().min(8),
+	email: z.email("Invalid email address"),
+	password: z.string()
+	.min(8, "Password must be at least 8 characters long")
+	.max(20, "Password must be at most 20 characters long"),
 });
 export type LoginInput = z.infer<typeof logInSchema>;
 
+export const emailVerificationSchema = z.object({
+	email: z.email("Invalid email address"),
+	code: z.string().length(6, "Verification code must be 6 characters long"),
+});
+export type EmailVerificationInput = z.infer<typeof emailVerificationSchema>;

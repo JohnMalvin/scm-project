@@ -39,8 +39,10 @@ Field.displayName = "Field";
 
 export default function SignupPage() {
   const [error, setError] = useState<string | null>(null);
+  const [codeVerified, setCodeVerified] = useState<boolean>(false);
 
   const emailRef = useRef<HTMLInputElement>(null);
+  const veriCodeRef = useRef<HTMLInputElement>(null);
   const passRef = useRef<HTMLInputElement>(null);
   const confPassRef = useRef<HTMLInputElement>(null);
   const usernameRef = useRef<HTMLInputElement>(null);
@@ -58,6 +60,11 @@ export default function SignupPage() {
     
     if (!validator.isEmail(email)) {
       setError("Invalid email adress");
+      return;
+    }
+
+    if (!codeVerified) {
+      setError("Email was not verified");
       return;
     }
 
@@ -97,6 +104,69 @@ export default function SignupPage() {
     }
   }
 
+  const requestCode = async () => {
+    const email = emailRef.current?.value;
+    if (!email || !validator.isEmail(email)) {
+      setError("Please enter a valid email to request code");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/v1/sendEmailVerification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email
+        })
+      })
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Something went wrong");
+      }
+
+    } catch {
+      setError("Network error. Please try again");
+    }
+  }
+
+  const verifyCode = async () => {
+    const veriCode = veriCodeRef.current?.value.trim().toUpperCase();
+    const email = emailRef.current?.value;
+
+    if (veriCode?.length !== 6) {
+      setError("Invalid verification code");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/v1/verifyEmailCode", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          code: veriCode
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.error || data.message || "Invalid verification code");
+        return;
+      }
+      setCodeVerified(true);
+      setError(null);
+    } catch {
+      setError("Network error. Please try again");
+    }
+  }
+
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="
@@ -115,6 +185,31 @@ export default function SignupPage() {
         <form className="flex flex-col gap-4">
           <Field ref={usernameRef} id="username" label="Username" type="text" />
           <Field ref={emailRef} id="email" label="Email" type="email" />
+          <Field ref={veriCodeRef} id="veriCode" label="Verification code" type="text" />
+          <button
+            type="button"
+            onClick={requestCode}
+            className="
+              mt-4 rounded-md bg-red-500 py-2
+              text-lg font-semibold text-white
+              transition hover:bg-red-600
+              focus:outline-none focus:ring-2 focus:ring-red-400
+            "
+          >
+            Request Code
+          </button>
+          <button
+            type="button"
+            onClick={verifyCode}
+            className="
+              mt-4 rounded-md bg-red-500 py-2
+              text-lg font-semibold text-white
+              transition hover:bg-red-600
+              focus:outline-none focus:ring-2 focus:ring-red-400
+            "
+          >
+            Verify Code
+          </button>
           <Field ref={passRef} id="password" label="Password" type="password" />
           <Field
             ref={confPassRef}
