@@ -11,7 +11,7 @@ export async function POST(request: Request) {
 
 		if (!parsed.success) {
 			return NextResponse.json(
-				{ error: "Invalid input data" },
+				{ error: parsed.error.issues[0].message ?? "Invalid input data" },
 				{ status: 400 }
 			);
 		}
@@ -32,9 +32,9 @@ export async function POST(request: Request) {
 		);
 
 	} catch (error: unknown) {
-		if (error instanceof Error && error.message === "User already exists") {
+		if (error instanceof Error && (error.message === "Email already exists" || error.message === "Username already exists")) {
 			return NextResponse.json(
-				{ error: "User already exists" },
+				{ error: error.message },
 				{ status: 409 }
 			);
 		}

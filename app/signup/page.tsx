@@ -86,6 +86,7 @@ export default function SignupPage() {
 
       if (!response.ok) {
         setError(data.error || "Something went wrong");
+        return;
       }
 
       setError(null);

@@ -5,8 +5,11 @@ import { signAccessToken, signRefreshToken } from "@/lib/jwt";
 export async function signupUser(username: string, email: string, password: string) {
 	const existingEmail = await User.findOne({ email });
 	const existingUsername = await User.findOne({ username });
-	if (existingEmail || existingUsername) {
-		throw new Error("User already exists");
+	if (existingEmail) {
+		throw new Error("Email already exists");
+	}
+	if (existingUsername) {
+		throw new Error("Username already exists");
 	}
 
 	const hashedPassword = await hashPassword(password);
