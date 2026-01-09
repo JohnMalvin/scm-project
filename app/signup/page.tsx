@@ -1,242 +1,262 @@
 "use client";
-import { useRef, useState } from "react";
-import { forwardRef } from "react";
+
+import { useRouter } from "next/navigation";
+import { useRef, useState, forwardRef } from "react";
 import validator from "validator";
 
 type FieldProps = {
   label: string;
   type: string;
   id: string;
+  placeholder?: string;
 };
 
 const Field = forwardRef<HTMLInputElement, FieldProps>(
-  ({ label, type, id }, ref) => {
-    return (
-      <div className="flex flex-col gap-1">
-        <label
-          htmlFor={id}
-          className="text-sm font-medium text-gray-700"
-        >
-          {label}
-        </label>
-        <input
-          ref={ref}
-          id={id}
-          type={type}
-          autoComplete="off"
-          className="
-            h-10 w-full rounded-md border border-gray-300
-            px-3 text-base
-            focus:outline-none focus:ring-2 focus:ring-amber-600 
-          "
-        />
-      </div>
-    );
-  }
+  ({ label, type, id, placeholder }, ref) => (
+    <div className="flex flex-col gap-1">
+      <label htmlFor={id} className="text-sm font-semibold text-gray-700">
+        {label}
+      </label>
+      <input
+        ref={ref}
+        id={id}
+        type={type}
+        placeholder={placeholder}
+        autoComplete="off"
+        className="
+          h-11 rounded-md border border-gray-300 px-3
+          text-sm focus:outline-none
+          focus:ring-2 focus:ring-amber-600
+        "
+      />
+    </div>
+  )
 );
 
 Field.displayName = "Field";
 
 export default function SignupPage() {
-  const [error, setError] = useState<string | null>(null);
-  const [codeVerified, setCodeVerified] = useState<boolean>(false);
+  const router = useRouter();
 
+  const [error, setError] = useState<string | null>(null);
+  const [codeVerified, setCodeVerified] = useState(false);
+  const [codeRequested, setCodeRequested] = useState(false);
+
+  const usernameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
-  const veriCodeRef = useRef<HTMLInputElement>(null);
+  const codeRef = useRef<HTMLInputElement>(null);
   const passRef = useRef<HTMLInputElement>(null);
   const confPassRef = useRef<HTMLInputElement>(null);
-  const usernameRef = useRef<HTMLInputElement>(null);
+
+  /* -------------------- Validation -------------------- */
 
   const validateSignUp = async () => {
     const username = usernameRef.current?.value;
     const email = emailRef.current?.value;
     const password = passRef.current?.value;
     const confirm = confPassRef.current?.value;
-    
+
     if (!username || !email || !password || !confirm) {
-      setError("All fields are required");
-      return;
+      return setError("All fields are required");
     }
-    
+
     if (!validator.isEmail(email)) {
-      setError("Invalid email adress");
-      return;
+      return setError("Please enter a valid email");
     }
 
     if (!codeVerified) {
-      setError("Email was not verified");
-      return;
+      return setError("Please verify your email first");
     }
 
     if (password !== confirm) {
-      setError("Passwords do not match");
-      return;
+      return setError("Passwords do not match");
     }
 
     setError(null);
     await signUp(username, email, password);
   };
 
+  /* -------------------- API -------------------- */
+
   const signUp = async (username: string, email: string, password: string) => {
     try {
-      const response = await fetch("/api/v1/signup", {
+      const res = await fetch("/api/v1/signup", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username, email, password
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
       });
 
-      const data = await response.json();
+      const data = await res.json();
 
-      if (!response.ok) {
-        setError(data.error || "Something went wrong");
+      if (!res.ok) {
+        setError(data.error || "Signup failed");
         return;
       }
 
-      setError(null);
-      console.log("User created", data.userId);
-
+      router.push("/dashboard");
     } catch {
       setError("Network error. Please try again");
     }
-  }
+  };
 
   const requestCode = async () => {
     const email = emailRef.current?.value;
     if (!email || !validator.isEmail(email)) {
-      setError("Please enter a valid email to request code");
-      return;
+      return setError("Enter a valid email to request a code");
     }
+
+    setCodeRequested(true);
+    setError(null);
 
     try {
-      const response = await fetch("/api/v1/sendEmailVerification", {
+      await fetch("/api/v1/sendEmailVerification", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email
-        })
-      })
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || "Something went wrong");
-      }
-
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
     } catch {
-      setError("Network error. Please try again");
+      setError("Failed to send verification code");
     }
-  }
+  };
 
   const verifyCode = async () => {
-    const veriCode = veriCodeRef.current?.value.trim().toUpperCase();
+    const code = codeRef.current?.value?.trim().toUpperCase();
     const email = emailRef.current?.value;
 
-    if (veriCode?.length !== 6) {
-      setError("Invalid verification code");
-      return;
+    if (!code || code.length !== 6) {
+      return setError("Invalid verification code");
     }
 
     try {
-      const response = await fetch("/api/v1/verifyEmailCode", {
+      const res = await fetch("/api/v1/verifyEmailCode", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          code: veriCode
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code }),
       });
 
-      const data = await response.json();
-      if (!response.ok) {
-        setError(data.error || data.message || "Invalid verification code");
+      if (!res.ok) {
+        setError("Verification failed");
         return;
       }
+
       setCodeVerified(true);
       setError(null);
     } catch {
-      setError("Network error. Please try again");
+      setError("Network error");
     }
-  }
-
+  };
+  const handleUppercase = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.value = e.target.value.toUpperCase();
+  };
+  /* -------------------- UI -------------------- */
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="
-        w-full max-w-sm
-        rounded-lg border border-amber-900
-        bg-white p-6
-        shadow-md
-      ">
-        <h1 className="
-          mb-6 rounded-md bg-amber-800 py-2
-          text-center text-2xl font-bold text-white
-        ">
-          Sign up
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-gray-100 px-4">
+      <div className="w-full max-w-md rounded-xl bg-white shadow-lg p-8">
+        <h1 className="text-3xl font-extrabold text-center text-amber-800">
+          Create your account
         </h1>
+        <p className="mt-1 text-center text-sm text-gray-500">
+          Start your journey with us 🚀
+        </p>
 
-        <form className="flex flex-col gap-4">
-          <Field ref={usernameRef} id="username" label="Username" type="text" />
-          <Field ref={emailRef} id="email" label="Email" type="email" />
-          <Field ref={veriCodeRef} id="veriCode" label="Verification code" type="text" />
-          <button
-            type="button"
-            onClick={requestCode}
-            className="
-              mt-4 rounded-md bg-red-500 py-2
-              text-lg font-semibold text-white
-              transition hover:bg-red-600
-              focus:outline-none focus:ring-2 focus:ring-red-400
-            "
-          >
-            Request Code
-          </button>
-          <button
-            type="button"
-            onClick={verifyCode}
-            className="
-              mt-4 rounded-md bg-red-500 py-2
-              text-lg font-semibold text-white
-              transition hover:bg-red-600
-              focus:outline-none focus:ring-2 focus:ring-red-400
-            "
-          >
-            Verify Code
-          </button>
-          <Field ref={passRef} id="password" label="Password" type="password" />
+        <div className="mt-8 flex flex-col gap-5">
+          {/* Step 1 */}
           <Field
-            ref={confPassRef}
-            id="confirmPassword"
-            label="Confirm password"
-            type="password"
+            ref={usernameRef}
+            id="username"
+            label="Username"
+            type="text"
+            placeholder="yourname"
           />
 
-          {error && (
-            <p className="text-red-500 text-sm text-center">
-              {error}
+          {/* Step 2 */}
+          <Field
+            ref={emailRef}
+            id="email"
+            label="Email address"
+            type="email"
+            placeholder="you@example.com"
+          />
+
+          {codeRequested && (
+            <input
+              ref={codeRef}
+              id="veriCode"
+              type="text"
+              placeholder="XXXXXX"
+              maxLength={6}
+              className="
+                uppercase tracking-widest text-center
+                h-11 rounded-md border border-gray-300
+                focus:ring-2 focus:ring-amber-600 outline-0 font-bold
+              "
+              onInput={(e) => {
+                e.currentTarget.value = e.currentTarget.value.toUpperCase();
+              }}
+            />
+          )}
+
+          {codeVerified && (
+            <p className="text-sm font-semibold text-green-600">
+              ✔ Email verified successfully
             </p>
           )}
+
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={requestCode}
+              className="flex-1 rounded-md bg-amber-600 py-2 font-semibold text-white hover:bg-amber-700"
+            >
+              {codeRequested ? "Resend Code" : "Send Code"}
+            </button>
+
+            {codeRequested && (
+              <button
+                type="button"
+                onClick={verifyCode}
+                className="flex-1 rounded-md bg-gray-800 py-2 font-semibold text-white hover:bg-gray-900"
+              >
+                Verify
+              </button>
+            )}
+          </div>
+
+          {/* Step 3 */}
+          <Field
+            ref={passRef}
+            id="password"
+            label="Password"
+            type="password"
+            // placeholder="••••••••"
+          />
+          <Field
+            ref={confPassRef}
+            id="confirm"
+            label="Confirm password"
+            type="password"
+            // placeholder="••••••••"
+          />
 
           <button
             type="button"
             onClick={validateSignUp}
             className="
-              mt-4 rounded-md bg-red-500 py-2
-              text-lg font-semibold text-white
-              transition hover:bg-red-600
-              focus:outline-none focus:ring-2 focus:ring-red-400
+              mt-2 rounded-md bg-amber-700 py-3
+              text-lg font-bold text-white
+              hover:bg-amber-800
             "
           >
-            Sign up
+            Create Account
           </button>
-        </form>
+
+          {error && (
+            <p className="text-center text-sm font-medium text-red-500">
+              {error}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

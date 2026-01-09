@@ -4,6 +4,11 @@ import { signAccessToken, signRefreshToken } from "@/lib/jwt";
 import { transporter } from "@/lib/mailer";
 import { EmailVerification } from "@/models/EmailVerification";
 
+export async function checkUsername(username: string) { 
+	const existingUser = await User.findOne({ username });
+	return {result: !!existingUser};
+}
+
 export async function signupUser(username: string, email: string, password: string) {
 	const existingEmail = await User.findOne({ email });
 	const existingUsername = await User.findOne({ username });
