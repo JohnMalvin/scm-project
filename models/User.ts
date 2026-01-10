@@ -16,16 +16,12 @@ const userSchema = new Schema(
 			lowercase: true,
 			trim: true,
 		},
-		emailVerified: {
-			type: Boolean,
-			default: false,
-		},
 		password: {
 			type: String,
 			required: true,
 			select: false,
 		},
-		refreshTokens: {
+		refreshToken: {
 			type: String,
 			default: null,
 			select: false,

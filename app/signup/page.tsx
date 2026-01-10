@@ -93,7 +93,7 @@ export default function SignupPage() {
         return;
       }
 
-      router.push("/dashboard");
+      router.push("/login");
     } catch {
       setError("Network error. Please try again");
     }
@@ -145,9 +145,6 @@ export default function SignupPage() {
       setError("Network error");
     }
   };
-  const handleUppercase = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.target.value = e.target.value.toUpperCase();
-  };
   /* -------------------- UI -------------------- */
 
   return (
@@ -162,13 +159,27 @@ export default function SignupPage() {
 
         <div className="mt-8 flex flex-col gap-5">
           {/* Step 1 */}
-          <Field
-            ref={usernameRef}
-            id="username"
-            label="Username"
-            type="text"
-            placeholder="yourname"
-          />
+
+          <div className="flex flex-col gap-1">
+            <label htmlFor="username" className="text-sm font-semibold text-gray-700">
+              username
+            </label>
+            <input
+              ref={usernameRef}
+              id="username"
+              type="text"
+              placeholder="yourname"
+              autoComplete="off"
+              className="
+                h-11 rounded-md border border-gray-300 px-3
+                text-sm focus:outline-none
+                focus:ring-2 focus:ring-amber-600
+                "
+              onInput={(e) => {
+                  e.currentTarget.value = e.currentTarget.value.toLowerCase();
+              }}
+            />
+          </div>
 
           {/* Step 2 */}
           <Field
@@ -184,6 +195,7 @@ export default function SignupPage() {
               ref={codeRef}
               id="veriCode"
               type="text"
+              autoComplete="off"
               placeholder="XXXXXX"
               maxLength={6}
               className="
@@ -250,6 +262,16 @@ export default function SignupPage() {
           >
             Create Account
           </button>
+
+          <p className="text-center text-sm text-gray-500">
+            Already have an account?{" "}
+            <button
+              onClick={() => router.push("/login")}
+              className="font-semibold text-amber-700 hover:underline"
+            >
+              Log in
+            </button>
+          </p>
 
           {error && (
             <p className="text-center text-sm font-medium text-red-500">

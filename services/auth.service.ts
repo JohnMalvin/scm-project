@@ -3,6 +3,7 @@ import { comparePasswords, hashPassword } from "@/lib/helper";
 import { signAccessToken, signRefreshToken } from "@/lib/jwt";
 import { transporter } from "@/lib/mailer";
 import { EmailVerification } from "@/models/EmailVerification";
+import crypto from "crypto";
 
 export async function checkUsername(username: string) { 
 	const existingUser = await User.findOne({ username });
@@ -30,8 +31,15 @@ export async function signupUser(username: string, email: string, password: stri
 	return newUser;
 }
 
-export async function loginUser(username: string, password: string) {
-	const user = await User.findOne({ username });
+export async function loginUser(identifier: string, password: string) {
+	const normalizedIdentifier = identifier.trim().toLowerCase();
+	const user = await User.findOne({
+		$or: [
+			{ username: normalizedIdentifier },
+			{ email: normalizedIdentifier }
+		]
+	}).select("+password +refreshToken");
+
 	if (!user) {
 		throw new Error("User does not exist");
 	}
@@ -47,8 +55,12 @@ export async function loginUser(username: string, password: string) {
 
 	const accessToken = signAccessToken(user._id.toString());
 	const refreshToken = signRefreshToken(user._id.toString());
-	const hashedRefreshToken = await hashPassword(refreshToken);
-	await user.updateOne({ refreshToken: hashedRefreshToken });
+	// const hashedRefreshToken = await hashPassword(refreshToken);
+
+	// console.log("Hashed Refresh Token:", hashedRefreshToken);
+	await user.updateOne({
+		refreshToken: crypto.createHash('sha256').update(refreshToken).digest('hex')
+	});
 
 	return {
 		user: {

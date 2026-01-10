@@ -15,9 +15,9 @@ export async function POST(request: Request) {
 				{ status: 400 }
 			);
 		}
-
+		
 		const user = await loginUser(
-			parsed.data.email,
+			parsed.data.identifier,
 			parsed.data.password
 		);
 

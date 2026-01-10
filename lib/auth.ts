@@ -29,11 +29,21 @@ export const signUpSchema = z.object({
 export type SignupInput = z.infer<typeof signUpSchema>;
 
 export const logInSchema = z.object({
-	email: z.email("Invalid email address"),
+	identifier: z.string()
+		.min(3, "Username or email must be at least 3 characters long")
+		.refine((val) => {
+			const isEmail = z.email().safeParse(val).success;
+			const isUsername = /^[a-zA-Z0-9_]+$/.test(val);
+			return isEmail || isUsername;
+		}, {
+			message: "Identifier must be a valid email or username"
+		}
+		),
 	password: z.string()
 	.min(8, "Password must be at least 8 characters long")
 	.max(20, "Password must be at most 20 characters long"),
 });
+
 export type LoginInput = z.infer<typeof logInSchema>;
 
 export const emailVerificationSchema = z.object({
