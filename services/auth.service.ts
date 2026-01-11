@@ -64,7 +64,7 @@ export async function loginUser(identifier: string, password: string) {
 	const refreshToken = signRefreshToken(user._id.toString());
 
 	await user.updateOne({
-		refreshToken: crypto.createHash('sha256').update(refreshToken).digest('hex')
+		refreshToken: await hashPassword(refreshToken)
 	});
 
 	return {
@@ -78,19 +78,29 @@ export async function loginUser(identifier: string, password: string) {
 }
 
 export async function logoutUser(refreshToken: string) {
-	const user = await User.findOne({ refreshToken: {$ne: null} });
-	if (!user) {
-		throw new Error("User does not exist");
+	const users = await User.find({ refreshToken: { $ne: null } }).select("+refreshToken");
+
+	for (const user of users) {
+
+		let isValid = false;
+		try {
+			isValid = await comparePasswords(refreshToken, user.refreshToken);
+		} catch (err) {
+			console.error("comparePasswords failed:", err);
+			continue;
+		}
+
+		if (isValid) {
+			user.refreshToken = null;
+			await user.save();
+			return;
+		}
 	}
 
-	const isValid = await comparePasswords(refreshToken, user.refreshToken!);
-	if (!isValid) {
-		throw new Error("User does not exist");
-	}
-	
-	user.refreshToken = null;
-	await user.save();
+	throw new Error("User does not exist");
 }
+
+
 
 export async function verifyEmailCode(email: string, code: string) { 
 	email = email.trim().toLowerCase();
