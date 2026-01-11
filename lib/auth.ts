@@ -30,7 +30,7 @@ export type SignupInput = z.infer<typeof signUpSchema>;
 
 export const logInSchema = z.object({
 	identifier: z.string()
-		.min(3, "Username or email must be at least 3 characters long")
+	.min(3, "Username or email must be at least 3 characters long")
 		.refine((val) => {
 			const isEmail = z.email().safeParse(val).success;
 			const isUsername = /^[a-zA-Z0-9_]+$/.test(val);
@@ -39,12 +39,22 @@ export const logInSchema = z.object({
 			message: "Identifier must be a valid email or username"
 		}
 		),
-	password: z.string()
+		password: z.string()
+		.min(8, "Password must be at least 8 characters long")
+		.max(20, "Password must be at most 20 characters long"),
+	});
+export type LoginInput = z.infer<typeof logInSchema>;
+	
+	
+export const resetPasswordSchema = z.object({
+	email: z.email("Invalid email address"),
+
+	newPassword: z.string()
 	.min(8, "Password must be at least 8 characters long")
 	.max(20, "Password must be at most 20 characters long"),
 });
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 
-export type LoginInput = z.infer<typeof logInSchema>;
 
 export const emailVerificationSchema = z.object({
 	email: z.email("Invalid email address"),

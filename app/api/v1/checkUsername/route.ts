@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
-import { checkUsername, } from "@/services/auth.service";
+import { checkUsername, sendVerificationCode, } from "@/services/auth.service";
+import { generateRandomCode } from "@/lib/helper";
 
 export async function GET(request: Request) { 
 	try {
@@ -13,9 +14,15 @@ export async function GET(request: Request) {
 				{ status: 400 }
 			);
 		}
+		
 		const result = await checkUsername(username);
+		if (result.exists) {
+			const code = generateRandomCode(6);
+			await sendVerificationCode(result.email, code);
+		}
 		return NextResponse.json(result, { status: 200 });
-	} catch  {
+	} catch (error) {
+		console.error("Error in checkUsername:", error);
 		return NextResponse.json(
 			{ error: "Internal Server Error" },
 			{ status: 500 }

@@ -19,13 +19,23 @@ export async function POST(request: Request) {
 
 		const { email, code } = parsed.data;
 
-		await verifyEmailCode(email, code);
+		const token = await verifyEmailCode(email, code);
 
-		return NextResponse.json(
+		const response =  NextResponse.json(
 			{ message: "Email verified successfully" },
 			{ status: 200 }
 		);
-		
+
+		response.cookies.set("emailVerificationToken", token, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
+			sameSite: "lax",
+			maxAge: 15 * 60,
+			path: "/",
+		});
+
+		return response;
+
 	} catch (error) {
 		if (error instanceof Error && error.message === "Invalid verification code") {
 			return NextResponse.json(

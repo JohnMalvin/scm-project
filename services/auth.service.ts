@@ -1,13 +1,20 @@
 import { User } from "@/models/User";
-import { comparePasswords, hashPassword } from "@/lib/helper";
+import { comparePasswords, generateToken, hashPassword } from "@/lib/helper";
 import { signAccessToken, signRefreshToken } from "@/lib/jwt";
 import { transporter } from "@/lib/mailer";
 import { EmailVerification } from "@/models/EmailVerification";
 import crypto from "crypto";
+import { VerificationToken } from "@/models/VerificationToken";
 
 export async function checkUsername(username: string) { 
 	const existingUser = await User.findOne({ username });
-	return {result: !!existingUser};
+	if (!existingUser) {
+		return {exists: false}
+	}
+	return {
+		exists: true,
+		email: existingUser.email,
+	};
 }
 
 export async function signupUser(username: string, email: string, password: string) {
@@ -55,9 +62,7 @@ export async function loginUser(identifier: string, password: string) {
 
 	const accessToken = signAccessToken(user._id.toString());
 	const refreshToken = signRefreshToken(user._id.toString());
-	// const hashedRefreshToken = await hashPassword(refreshToken);
 
-	// console.log("Hashed Refresh Token:", hashedRefreshToken);
 	await user.updateOne({
 		refreshToken: crypto.createHash('sha256').update(refreshToken).digest('hex')
 	});
@@ -147,6 +152,17 @@ export async function verifyEmailCode(email: string, code: string) {
 	}
 
 	await EmailVerification.deleteMany({ email });
+	const token = await generateToken();
+	const hashedToken = await hashPassword(token);
+
+	await VerificationToken.create({
+		identifier: email,
+		hashedToken,
+		purpose: "PASSWORD_RESET",
+		expiresAt: new Date(Date.now() + 15 * 60 * 1000),
+	});
+	
+	return token;
 }
 
 export async function sendVerificationCode(email: string, code: string) {
@@ -228,4 +244,42 @@ export async function emailVerificationAlert(
 			</p>
 		`,
 	});
+}
+
+export async function resetPassword(token: string, email: string, newPassword: string) {
+	email = email.trim().toLowerCase();
+
+	const verificationRecord = await VerificationToken.findOneAndUpdate(
+		{
+			identifier: email,
+			purpose: "PASSWORD_RESET",
+			used: false,
+			expiresAt: { $gt: new Date() },
+		},
+		{ $set: { used: true } },
+		{ new: true }
+	);
+
+	if (!verificationRecord) {
+		throw new Error("Invalid or expired reset token");
+	}
+	const isValid = await comparePasswords(token, verificationRecord.hashedToken);
+	if (!isValid) {
+		throw new Error("Invalid or expired reset token");
+	}
+
+	await VerificationToken.deleteMany({
+		identifier: email,
+		purpose: "PASSWORD_RESET",
+	});
+
+	
+	const user = await User.findOne({ email });
+	if (!user) {
+		throw new Error("Invalid or expired reset token");
+	}
+
+	user.password = await hashPassword(newPassword);
+	await user.save();
+	return user;
 }

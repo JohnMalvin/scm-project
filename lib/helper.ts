@@ -22,3 +22,8 @@ export function generateRandomCode(length: number): string {
 	}
 	return result;
 }
+
+export async function generateToken(length:number = 32): Promise<string> { 
+	const buffer = await import("crypto").then(crypto => crypto.randomBytes(length));
+	return buffer.toString("hex");
+}

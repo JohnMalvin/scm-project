@@ -22,7 +22,6 @@ export async function POST(request: Request) {
 			parsed.data.password
 		);
 
-		console.log("New user created:", newUser);
 		return NextResponse.json(
 			{
 				message: "User created successfully",
