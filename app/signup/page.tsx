@@ -80,7 +80,7 @@ export default function SignupPage() {
 
   const signUp = async (username: string, email: string, password: string) => {
     try {
-      const res = await fetch("/api/v1/signup", {
+      const res = await fetch("/api/v1/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),
@@ -109,7 +109,7 @@ export default function SignupPage() {
     setError(null);
 
     try {
-      await fetch("/api/v1/sendEmailVerification", {
+      await fetch("/api/v1/emailVerification/sendEmailVerification", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -128,7 +128,7 @@ export default function SignupPage() {
     }
 
     try {
-      const res = await fetch("/api/v1/verifyEmailCode", {
+      const res = await fetch("/api/v1/emailVerification/verifyEmailCode", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code }),

@@ -91,7 +91,7 @@ export default function ForgetPasswordPage() {
     const email = userEmail;
 
     try {
-      await fetch("/api/v1/sendEmailVerification", {
+      await fetch("/api/v1/emailVerification/sendEmailVerification", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -110,7 +110,7 @@ export default function ForgetPasswordPage() {
     }
 
     try {
-      const res = await fetch("/api/v1/verifyEmailCode", {
+      const res = await fetch("/api/v1/emailVerification/verifyEmailCode", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -143,7 +143,7 @@ export default function ForgetPasswordPage() {
     }
 
     try {
-      const res = await fetch("/api/v1/resetPassword", {
+      const res = await fetch("/api/v1/auth/resetPassword", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

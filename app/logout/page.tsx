@@ -8,7 +8,7 @@ export default function Logout() {
 
     const handleLogout = async () => {
         try {
-            await fetch('/api/v1/logout', {
+            await fetch('/api/v1/auth/logout', {
                 method: 'POST',
                 credentials: 'include'
             });
