@@ -1,5 +1,12 @@
 import {Schema, model, models} from 'mongoose';
 
+export const USER_STATUS = [
+'BUYER',
+'SELLER',
+] as const;
+
+export type UserStatus = typeof USER_STATUS[number];
+
 const userSchema = new Schema(
 	{
 		username: {
@@ -26,6 +33,11 @@ const userSchema = new Schema(
 			default: null,
 			select: false,
 		},
+		status: {
+			type: String,
+			enum: USER_STATUS,
+			default: null,
+		}
 	},
 	{ timestamps: true }
 );

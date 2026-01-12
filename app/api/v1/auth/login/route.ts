@@ -33,6 +33,14 @@ export async function POST(request: Request) {
 			path: "/",
 			maxAge: 7 * 24 * 60 * 60, // 7 days
 		});
+
+		response.cookies.set("accessToken", user.accessToken, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === "production",
+			sameSite: "strict",
+			path: "/",
+			maxAge: 7 * 24 * 60 * 60, // 7 days
+		});
 		return response;
 
 	} catch (error: unknown) {

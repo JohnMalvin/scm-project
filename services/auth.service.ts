@@ -1,9 +1,8 @@
-import { User } from "@/models/User";
+import { User, UserStatus } from "@/models/User";
 import { comparePasswords, generateToken, hashPassword } from "@/lib/helper";
 import { signAccessToken, signRefreshToken } from "@/lib/jwt";
 import { transporter } from "@/lib/mailer";
 import { EmailVerification } from "@/models/EmailVerification";
-import crypto from "crypto";
 import { VerificationToken } from "@/models/VerificationToken";
 
 export async function checkUsername(username: string) { 
@@ -99,8 +98,6 @@ export async function logoutUser(refreshToken: string) {
 
 	throw new Error("User does not exist");
 }
-
-
 
 export async function verifyEmailCode(email: string, code: string) { 
 	email = email.trim().toLowerCase();
@@ -291,5 +288,18 @@ export async function resetPassword(token: string, email: string, newPassword: s
 
 	user.password = await hashPassword(newPassword);
 	await user.save();
+	return user;
+}
+
+export async function setStatus(userId: string, status: UserStatus) {
+	const user = await User.findByIdAndUpdate(
+		userId,
+		{ status },
+		{ new: true }
+	);
+
+	if (!user) {
+		throw new Error("User does not exist");
+	}
 	return user;
 }

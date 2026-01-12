@@ -1,16 +1,18 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { User } from "@/models/User";
-import { getAuthUser } from "@/lib/auth";
+import { getAuthUser, userStatusSchema } from "@/lib/auth";
+import { setStatus } from "@/services/auth.service";
 
-export async function GET(request: Request) {
+export async function POST(request: Request) {
 	try {
 		await connectDB();
 
 		const authUser = await getAuthUser(request);
+		const userId = authUser.sub;
 
 		const user = await User.findById(authUser.sub).select(
-		"email createdAt"
+		"_id email createdAt"
 		);
 
 		if (!user) {
@@ -20,8 +22,22 @@ export async function GET(request: Request) {
 			);
 		}
 
+		const body = await request.json();
+
+		const parsed = userStatusSchema.safeParse(body);
+
+		if (!parsed.success) {
+			return NextResponse.json(
+				{ error: parsed.error.issues[0].message },
+				{ status: 400 }
+			);
+		}
+
+		const { status } = parsed.data;
+		const result = await setStatus(userId, status);
+		
 		return NextResponse.json(
-			{ user },
+			result,
 			{ status: 200 }
 		);
 
@@ -47,4 +63,4 @@ export async function GET(request: Request) {
 			{ status: 500 }
 		);
 	}
-	}
+}

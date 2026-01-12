@@ -1,13 +1,21 @@
 import { z } from "zod";
 import { verifyAccessToken } from "./jwt";
+import { USER_STATUS } from "@/models/User";
+import { cookies } from "next/headers";
 
-export function getAuthUser(request: Request) {
+export async function getAuthUser(request: Request) {
 	const authHeader = request.headers.get("Authorization");
-	if (!authHeader || !authHeader.startsWith("Bearer ")) {
-		throw new Error("NO_TOKEN");
+	if (authHeader?.startsWith("Bearer ")) {
+		const token = authHeader.split(" ")[1];
+		return verifyAccessToken(token);
 	}
 
-	const token = authHeader.split(" ")[1];
+	const cookieStore = await cookies();
+	const token = cookieStore.get("accessToken")?.value;
+
+	if (!token) {
+		throw new Error("NO_TOKEN");
+	}
 	try {
 		return verifyAccessToken(token);
 	} catch {
@@ -61,3 +69,11 @@ export const emailVerificationSchema = z.object({
 	code: z.string().length(6, "Verification code must be 6 characters long"),
 });
 export type EmailVerificationInput = z.infer<typeof emailVerificationSchema>;
+
+
+export const userStatusSchema = z.object({
+	status: z.enum(USER_STATUS, {
+		message: "Invalid user status"
+	})
+});
+export type UserStatus = z.infer<typeof userStatusSchema>;
