@@ -4,7 +4,6 @@ import { apiFetch } from "@/utils/api";
 import { useRouter } from "next/navigation";
 import { useRef, useState, forwardRef, useEffect } from "react";
 import Image from "next/image";
-import validator from "validator";
 
 type FieldProps = {
   label: string;

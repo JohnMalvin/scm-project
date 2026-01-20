@@ -37,7 +37,11 @@ const userSchema = new Schema(
 			type: String,
 			enum: USER_STATUS,
 			default: null,
-		}
+		},
+		avatarUrl: {
+			type: String,
+			default:"/default-avatar-buyer.png"
+		},
 	},
 	{ timestamps: true }
 );

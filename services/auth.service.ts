@@ -174,7 +174,37 @@ export async function verifyEmailCode(email: string, code: string) {
 
 export async function sendVerificationCode(email: string, code: string) {
 	email = email.trim().toLowerCase();
-	await EmailVerification.deleteMany({ email });
+	const now = Date.now();
+
+	let record = await EmailVerification.findOne({ email });
+	if (record) {
+		if (record.lockedUntil && record.lockedUntil > new Date()) {
+			throw new Error("Too many request");
+		}
+	}
+
+	if (!record) {
+		record = new EmailVerification({
+			email,
+			attemptCount: 1,
+			expiration: new Date(now + 5 * 60 * 1000),
+		})
+	} else {
+		record.attemptCount += 1;
+		record.expiration = new Date(now + 5 * 60 * 1000);
+	}
+
+	if (record.attemptCount >= 5) {
+		record.lockedUntil = new Date(now + 15 * 60 * 1000);
+
+		if (!record.alertSentAt || now - record.alertSentAt.getTime() > now + 15 * 60 * 1000) {
+			await emailVerificationAlert(email, true);
+			record.alertSentAt = new Date();
+		}
+
+		await record.save();
+		throw new Error("Too many requests");
+	}
 
 	await transporter.sendMail({
 		from: `"My App" <${process.env.EMAIL_USER}>`,
@@ -189,12 +219,9 @@ export async function sendVerificationCode(email: string, code: string) {
 		`,
 	});
 
-	await EmailVerification.create({
-		email,
-		expiration: new Date(Date.now() + 5 * 60 * 1000),
-		emailVerificationCode: await hashPassword(code),
-	});
-	
+	record.emailVerificationCode = await hashPassword(code);
+	record.createdAt = new Date();
+	await record.save();
 }
 
 export async function emailVerificationAlert(
@@ -202,6 +229,11 @@ export async function emailVerificationAlert(
 	locked: boolean = false
 ) {
 	email = email.trim().toLowerCase();
+
+	const record = await EmailVerification.findOne({ email });
+	if (record.lockedUntil !== null) {
+		return;
+	}
 
 	const time = new Date().toLocaleString("en-US", {
 		dateStyle: "medium",
