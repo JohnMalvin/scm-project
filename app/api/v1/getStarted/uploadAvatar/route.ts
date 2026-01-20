@@ -46,9 +46,9 @@ export async function POST(request: Request) {
 			);
 		}
 
-		const mimeType = (file as any).type;
-		const size = (file as any).size;
-		const originalName = (file as any).name;
+		const mimeType = (file as File).type;
+		const size = (file as File).size;
+		const originalName = (file as File).name;
 
 		if (!ALLOWED_TYPES.includes(mimeType)) {
 			return NextResponse.json(
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
 
 		/* ---------- FILE SAVE ---------- */
 		const buffer = Buffer.from(
-			await (file as any).arrayBuffer()
+			await (file as File).arrayBuffer()
 		);
 
 		const ext = path.extname(originalName || ".png");
