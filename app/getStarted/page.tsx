@@ -39,10 +39,11 @@ Field.displayName = "Field";
 export default function GetStarted() {
   const router = useRouter();
 
-  const [step, setStep] = useState<number>(2);
+  const [step, setStep] = useState<number>(1);
   const [error, setError] = useState<string | null>(null);
   const [userStatus, setUserStatus] = useState<"BUYER" | "SELLER">("SELLER");
-
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -79,6 +80,36 @@ export default function GetStarted() {
       setError(null);
     } catch {
       setError("Failed to set status");
+    }
+  }
+
+  const handleNext = async () => {
+    if (step === 2 && avatarFile) {
+      const formData = new FormData();
+      formData.append("avatar", avatarFile);
+      
+      try {
+        const res = await apiFetch("/api/v1/getStarted/uploadAvatar", {
+          method: "POST",
+          body: formData,
+        })
+
+        if(!res.ok) {
+          throw new Error('Failed to upload image');
+        }
+
+        setError(null);
+        setStep(3);
+      } catch {
+        setError("Failed to upload Image");
+        setAvatarFile(null);
+        setAvatarPreview(null);
+        setStep(2);
+      }
+    }
+
+    if (step != 2) {
+      setStep(step + 1);
     }
   }
 
@@ -122,7 +153,11 @@ export default function GetStarted() {
             {/* Profile preview */}
             <div className="h-24 w-24 rounded-full overflow-hidden border-amber-800 border-4">
               <Image
-                src={userStatus === "BUYER" ? "/default-avatar-buyer.png" : "/default-avatar-seller.png"}
+                src={
+                  avatarPreview ?? (
+                    userStatus === "BUYER" ? "/default-avatar-buyer.png" : "/default-avatar-seller.png"
+                  )
+                }
                 alt="Profile"
                 width={96}
                 height={96}
@@ -137,6 +172,13 @@ export default function GetStarted() {
                 type="file"
                 accept="image/*"
                 className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+
+                  setAvatarFile(file);
+                  setAvatarPreview(URL.createObjectURL(file));
+                }}
               />
             </label>
 
@@ -222,7 +264,7 @@ export default function GetStarted() {
             <button
             type="button"
             className="text-sm text-blue-400 hover:underline"
-            onClick={() => setStep(step + 1)}
+            onClick={handleNext}
             >
               next
             </button>

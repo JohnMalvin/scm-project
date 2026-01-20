@@ -29,7 +29,7 @@ export async function POST(request: Request) {
 		response.cookies.set("refreshToken", user.refreshToken, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === "production",
-			sameSite: "strict",
+			sameSite: "lax",
 			path: "/",
 			maxAge: 7 * 24 * 60 * 60, // 7 days
 		});
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 		response.cookies.set("accessToken", user.accessToken, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === "production",
-			sameSite: "strict",
+			sameSite: "lax",
 			path: "/",
 			maxAge: 7 * 24 * 60 * 60, // 7 days
 		});
