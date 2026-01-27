@@ -77,3 +77,13 @@ export const userStatusSchema = z.object({
 	})
 });
 export type UserStatus = z.infer<typeof userStatusSchema>;
+
+export const avatarFileSchema = z.instanceof(File).refine(
+	(file) => file.size <= 5 * 1024 * 1024,
+	{ message: "File must be smaller than 5MB" }
+).refine(
+	(file) => ["image/png", "image/jpeg", "image/jpg"].includes(file.type),
+	{ message: "Only PNG or JPEG images are allowed" }
+);
+
+export type AvatarFile = z.infer<typeof avatarFileSchema>;

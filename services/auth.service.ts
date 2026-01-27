@@ -4,6 +4,7 @@ import { signAccessToken, signRefreshToken } from "@/lib/jwt";
 import { transporter } from "@/lib/mailer";
 import { EmailVerification } from "@/models/EmailVerification";
 import { VerificationToken } from "@/models/VerificationToken";
+import { S3_getSignedUrl, S3_uploadFile } from "@/lib/s3";
 
 export async function checkUsername(username: string) { 
 	const existingUser = await User.findOne({ username });
@@ -334,4 +335,28 @@ export async function setStatus(userId: string, status: UserStatus) {
 		throw new Error("User does not exist");
 	}
 	return user;
+}
+
+export async function uploadAvatarFile(file: File, userId: string): Promise<string> {
+	const user = await User.findById(userId	);
+	if (!user) {
+		throw new Error("User not found");
+	}
+	if (!file) {
+		throw new Error("No file uploaded");
+	}
+
+	const timestamp = Date.now();
+	const key = `avatars/${userId}-${timestamp}`;
+
+	const buffer = Buffer.from(await file.arrayBuffer());
+
+	await S3_uploadFile(key, buffer, file.type);
+
+	const url = await S3_getSignedUrl(key, 3600, "get");
+
+	user.setAvatar = true;
+	user.avatarKey = key;
+	await user.save();
+	return url;
 }

@@ -4,6 +4,7 @@ import { apiFetch } from "@/utils/api";
 import { useRouter } from "next/navigation";
 import { useRef, useState, forwardRef, useEffect } from "react";
 import Image from "next/image";
+import { includes } from "zod";
 
 type FieldProps = {
   label: string;
@@ -48,7 +49,10 @@ export default function GetStarted() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await apiFetch("/api/me");
+        const res = await apiFetch("/api/me", {
+          method: "GET",
+          credentials:"include"
+        });
 
         if (!res.ok) {
           router.replace("/login");
@@ -64,6 +68,7 @@ export default function GetStarted() {
     try {
       const res = await apiFetch('/api/v1/getStarted/setStatus', {
         method: 'POST',
+        credentials: "include",
         body: JSON.stringify({
           status
         })

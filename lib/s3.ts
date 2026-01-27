@@ -20,7 +20,7 @@ export const s3 = new S3Client({
 });
 
 // Upload a file
-export async function uploadFile(key: string, data: Buffer | Uint8Array, contentType: string) {
+export async function S3_uploadFile(key: string, data: Buffer | Uint8Array, contentType: string) {
   const command = new PutObjectCommand({
     Bucket: BUCKET,
     Key: key,
@@ -31,7 +31,7 @@ export async function uploadFile(key: string, data: Buffer | Uint8Array, content
 }
 
 // Download a file (returns Buffer)
-export async function getFile(key: string): Promise<Buffer> {
+export async function S3_getFile(key: string): Promise<Buffer> {
   const command = new GetObjectCommand({
     Bucket: BUCKET,
     Key: key,
@@ -44,7 +44,7 @@ export async function getFile(key: string): Promise<Buffer> {
 }
 
 // List files in bucket (optionally under a prefix)
-export async function listFiles(prefix = ""): Promise<string[]> {
+export async function S3_listFiles(prefix = ""): Promise<string[]> {
   const command = new ListObjectsV2Command({
     Bucket: BUCKET,
     Prefix: prefix,
@@ -54,7 +54,7 @@ export async function listFiles(prefix = ""): Promise<string[]> {
 }
 
 // Delete a file
-export async function deleteFile(key: string) {
+export async function S3_deleteFile(key: string) {
   const command = new DeleteObjectCommand({
     Bucket: BUCKET,
     Key: key,
@@ -63,7 +63,7 @@ export async function deleteFile(key: string) {
 }
 
 // Generate presigned URL (GET or PUT)
-export async function getSignedUrl(key: string, expiresIn = 3600, method: "get" | "put" = "get") {
+export async function S3_getSignedUrl(key: string, expiresIn = 3600, method: "get" | "put" = "get") {
   let command;
   if (method === "get") {
     command = new GetObjectCommand({

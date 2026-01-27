@@ -38,7 +38,11 @@ const userSchema = new Schema(
 			enum: USER_STATUS,
 			default: null,
 		},
-		avatarUrl: {
+		setAvatar: {
+			type: Boolean,
+			default: false,
+		},
+		avatarKey: {
 			type: String,
 			default:"/default-avatar-buyer.png"
 		},
