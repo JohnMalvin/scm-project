@@ -24,7 +24,7 @@ export default function Logout() {
         <>
             <button
                 onClick={handleLogout}
-                className="rounded bg-red-600 px-4 py-2 text-white"
+                className="rounded bg-(--focus) px-4 py-2 text-white"
             >
                 Logout
             </button>
