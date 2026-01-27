@@ -11,7 +11,7 @@ export default function Navbar() {
   const clickables = [
     { label: "Categories", href: "/link3" },
     { label: "Listings", href: "/link2" },
-    { label: "About Us", href: "/" },
+    { label: "Profile", href: "/" },
   ]
 
   return (
@@ -19,11 +19,12 @@ export default function Navbar() {
       <nav className="relative z-50 flex items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/">
-          <Image src="/logo.svg" alt="Logo" width={60} height={60} priority />
+          <Image src="/logo.svg" alt="Logo" width={90} height={90} priority />
         </Link>
 
         {/* Desktop menu */}
-        <section className="hidden md:flex items-center gap-6">
+        <section className="flex">
+        <section className="hidden md:flex items-center gap-6 justify-end">
           {clickables.map((clickable) => (
             <Link
               key={clickable.href}
@@ -33,16 +34,27 @@ export default function Navbar() {
                 hover:text-(--primary) text-shadow
                 after:absolute after:left-0 after:content-[attr(data-text)]
                 after:font-bold after:opacity-0 after:pointer-events-none
-              "
-              data-text={clickable.label}
-            >
+                "
+                data-text={clickable.label}
+                >
               {clickable.label}
             </Link>
 
           ))}
-          <Logout />
         </section>
-
+        {!open &&(
+          <section
+          className="flex gap-4 justify-end px-4 items-center"
+          >
+            <Link href="/">
+              <Image src="/chat.svg" alt="Logo" width={30} height={30} priority />
+            </Link>
+            <Link href="/">
+              <Image src="/notification.svg" alt="Logo" width={30} height={30} priority />
+            </Link>
+            <Logout />
+          </section>
+        )}
         {/* Mobile toggle button */}
         <button
           className="md:hidden"
@@ -56,6 +68,8 @@ export default function Navbar() {
             height={28}
           />
         </button>
+        </section>
+
       </nav>
 
       {/* Fullscreen mobile menu */}
