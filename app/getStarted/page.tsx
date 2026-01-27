@@ -16,7 +16,10 @@ type FieldProps = {
 const Field = forwardRef<HTMLInputElement, FieldProps>(
   ({ label, type, id, placeholder }, ref) => (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-sm font-semibold text-gray-700">
+      <label
+        htmlFor={id}
+        className="text-sm font-semibold text-(--dark-gray)"
+      >
         {label}
       </label>
       <input
@@ -26,14 +29,15 @@ const Field = forwardRef<HTMLInputElement, FieldProps>(
         placeholder={placeholder}
         autoComplete="off"
         className="
-          h-11 rounded-md border border-gray-300 px-3
+          h-11 rounded-md border border-[var(--gray)] px-3
           text-sm focus:outline-none
-          focus:ring-2 focus:ring-amber-600
+          focus:ring-2 focus:ring-[var(--focus)]
         "
       />
     </div>
   )
 );
+
 
 Field.displayName = "Field";
 
@@ -119,15 +123,15 @@ export default function GetStarted() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-gray-100 px-4">
-      <div className="w-full max-w-md rounded-xl bg-white shadow-lg p-8">
-        <h1 className="text-3xl font-extrabold text-center text-amber-800">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-(--background)">
+      <div className="w-full max-w-md rounded-xl bg-(--white) shadow-lg p-8">
+        <h1 className="text-3xl font-extrabold text-center text-(--primary)">
           Let&apos;s get started
         </h1>
 
         {step === 1 && (
           <section>
-            <p className="mt-7 text-center text-sm text-gray-500">
+            <p className="mt-7 text-center text-sm text-(--dark-gray)">
               Who are you?
             </p>
 
@@ -135,7 +139,7 @@ export default function GetStarted() {
               <button
                 type="button"
                 onClick={() => setStatus("BUYER")}
-                className="flex-1 rounded-md bg-amber-600 py-2 font-semibold text-white hover:bg-amber-700"
+                className="flex-1 rounded-md bg-(--focus) py-2 font-semibold text-(--white) hover:bg-(--secondary)"
               >
                 I&apos;m a buyer
               </button>
@@ -143,8 +147,8 @@ export default function GetStarted() {
               <button
                 type="button"
                 onClick={() => setStatus("SELLER")}
-                className="flex-1 rounded-md bg-gray-800 py-2 font-semibold text-white hover:bg-gray-900"
-                >
+                className="flex-1 rounded-md bg-(--dark-gray) py-2 font-semibold text-(--white) hover:bg-(--dark-gray)"
+              >
                 I&apos;m a seller
               </button>
             </div>
@@ -153,15 +157,17 @@ export default function GetStarted() {
 
         {step === 2 && (
           <section className="mt-6 flex flex-col items-center gap-4">
-            <p className="text-sm text-gray-500">Choose a profile picture</p>
+            <p className="text-sm text-(--dark-gray)">
+              Choose a profile picture
+            </p>
 
-            {/* Profile preview */}
-            <div className="h-24 w-24 rounded-full overflow-hidden border-amber-800 border-4">
+            <div className="h-24 w-24 rounded-full overflow-hidden border-4 border-(--primary)">
               <Image
                 src={
-                  avatarPreview ?? (
-                    userStatus === "BUYER" ? "/default-avatar-buyer.png" : "/default-avatar-seller.png"
-                  )
+                  avatarPreview ??
+                  (userStatus === "BUYER"
+                    ? "/default-avatar-buyer.png"
+                    : "/default-avatar-seller.png")
                 }
                 alt="Profile"
                 width={96}
@@ -170,8 +176,7 @@ export default function GetStarted() {
               />
             </div>
 
-            {/* Upload */}
-            <label className="cursor-pointer rounded-md bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700">
+            <label className="cursor-pointer rounded-md bg-(--focus) px-4 py-2 text-sm font-semibold text-(--white) hover:bg-(--secondary)">
               Upload photo
               <input
                 type="file"
@@ -186,80 +191,21 @@ export default function GetStarted() {
                 }}
               />
             </label>
-
-            {/* Skip */}
           </section>
-
         )}
-        
-        {/* <div className="mt-8 flex flex-col gap-5">
-          <Field
-            ref={identifierRef}
-            id="identifier"
-            label="Email or Username"
-            type="text"
-            placeholder="you@example.com"
-          />
 
-          <Field
-            ref={passRef}
-            id="password"
-            label="Password"
-            type="password"
-          />
-
-          <button
-            type="button"
-            onClick={validateLogin}
-            disabled={loading}
-            className="
-              mt-2 rounded-md bg-amber-700 py-3
-              text-lg font-bold text-white
-              hover:bg-amber-800 disabled:opacity-70
-            "
-          >
-            {loading ? "Logging in..." : "Log In"}
-          </button>
-
-          {error && (
-            <p className="text-center text-sm font-medium text-red-500">
-              {error}
-            </p>
-          )}
-
-          <p className="text-center text-sm text-gray-500">
-            Don’t have an account?{" "}
-            <button
-              onClick={() => router.push("/signup")}
-              className="font-semibold text-amber-700 hover:underline"
-            >
-              Sign up
-            </button>
-          </p>
-
-            <p className="text-left text-sm text-gray-500 -mb-5 -ml-3">
-            <button
-              onClick={() => router.push("/forgetPassword")}
-              className=" text-amber-700 hover:underline"
-            >
-              Forget password?
-            </button>
-          </p>
-        </div> */}
         {error && (
-          <p className="mt-5 text-center text-sm font-medium text-red-500">
+          <p className="mt-5 text-center text-sm font-medium text-(--danger)">
             {error}
           </p>
         )}
-        
-        <section
-          className="mt-5 flex justify-between"
-        >
+
+        <section className="mt-5 flex justify-between">
           {step > 1 && (
             <button
-            type="button"
-            className="text-sm text-blue-400 hover:underline"
-            onClick={() => setStep(step - 1)}
+              type="button"
+              className="text-sm text-(--blue) hover:underline"
+              onClick={() => setStep(step - 1)}
             >
               back
             </button>
@@ -267,16 +213,16 @@ export default function GetStarted() {
 
           {step > 1 && (
             <button
-            type="button"
-            className="text-sm text-blue-400 hover:underline"
-            onClick={handleNext}
+              type="button"
+              className="text-sm text-(--blue) hover:underline"
+              onClick={handleNext}
             >
               next
             </button>
           )}
         </section>
-
       </div>
     </div>
   );
+
 }

@@ -13,7 +13,10 @@ type FieldProps = {
 const Field = forwardRef<HTMLInputElement, FieldProps>(
   ({ label, type, id, placeholder }, ref) => (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-sm font-semibold text-gray-700">
+      <label
+        htmlFor={id}
+        className="text-sm font-semibold text-(--dark-gray)"
+      >
         {label}
       </label>
       <input
@@ -23,14 +26,15 @@ const Field = forwardRef<HTMLInputElement, FieldProps>(
         placeholder={placeholder}
         autoComplete="off"
         className="
-          h-11 rounded-md border border-gray-300 px-3
+          h-11 rounded-md border border-(--gray) px-3
           text-sm focus:outline-none
-          focus:ring-2 focus:ring-amber-600
+          focus:ring-2 focus:ring-(--focus)
         "
       />
     </div>
   )
 );
+
 
 Field.displayName = "Field";
 
@@ -176,23 +180,28 @@ export default function ForgetPasswordPage() {
 
 
   return (
-    <>
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-gray-100 px-4">
-        <div className="w-full max-w-md rounded-xl bg-white shadow-lg p-8">
-          <h1 className="text-3xl font-extrabold text-center text-amber-800">
-            Forget your Password?
-          </h1>
-          <p className="mt-1 text-center text-sm text-gray-500">
-            Let&apos;s reset your password 🔐
-          </p>
-          <div className="mt-1 flex flex-col gap-5"></div>
+  <>
+    <div className="min-h-screen flex items-center justify-center px-4 bg-(--background)">
+      <div className="w-full max-w-md rounded-xl bg-(--white) shadow-lg p-8">
+        <h1 className="text-3xl font-extrabold text-center text-(--primary)">
+          Forget your Password?
+        </h1>
 
-          {!usernameVerified && (
+        <p className="mt-1 text-center text-sm text-(--dark-gray)">
+          Let&apos;s reset your password 🔐
+        </p>
+
+        <div className="mt-1 flex flex-col gap-5"></div>
+
+        {!usernameVerified && (
           <div className="mt-8 flex flex-col gap-2 mb-5">
-
-            <label htmlFor="username" className="text-center text-sm font-semibold text-gray-700">
+            <label
+              htmlFor="username"
+              className="text-center text-sm font-semibold text-(--dark-gray)"
+            >
               enter your username:
             </label>
+
             <input
               ref={usernameRef}
               id="username"
@@ -200,118 +209,122 @@ export default function ForgetPasswordPage() {
               placeholder="username"
               autoComplete="off"
               className="
-                h-11 rounded-md border border-gray-300 px-3
+                h-11 rounded-md border border-(--gray) px-3
                 text-sm focus:outline-none
-                focus:ring-2 focus:ring-amber-600
-                "
-                onInput={(e) => {
-                  e.currentTarget.value = e.currentTarget.value.toLowerCase();
-                }}
+                focus:ring-2 focus:ring-(--focus)
+              "
+              onInput={(e) => {
+                e.currentTarget.value = e.currentTarget.value.toLowerCase();
+              }}
             />
+
             <button
               type="button"
               onClick={validateUsername}
               className="
-                mt-2 rounded-md bg-amber-700 py-3
-                text-lg font-bold text-white
-                hover:bg-amber-800
+                mt-2 rounded-md bg-(--secondary) py-3
+                text-lg font-bold text-(--white)
+                hover:bg-(--primary)
               "
             >
               Continue
             </button>
-            </div>
-          )}
+          </div>
+        )}
 
-          {usernameVerified && (
-            <div className="mt-8 flex flex-col gap-2">
-              <p className="text-center text-sm text-gray-700 mb-4">
-                An email has been sent to <span className="font-semibold">{maskedEmail}</span> with instructions to reset your password.
-              </p>
+        {usernameVerified && (
+          <div className="mt-8 flex flex-col gap-2">
+            <p className="text-center text-sm text-(--dark-gray) mb-4">
+              An email has been sent to{" "}
+              <span className="font-semibold">{maskedEmail}</span> with
+              instructions to reset your password.
+            </p>
 
-              <input
-                ref={codeRef}
-                id="veriCode"
-                type="text"
-                autoComplete="off"
-                placeholder="XXXXXX"
-                maxLength={6}
-                className="
+            <input
+              ref={codeRef}
+              id="veriCode"
+              type="text"
+              autoComplete="off"
+              placeholder="XXXXXX"
+              maxLength={6}
+              className="
                 uppercase tracking-widest text-center
-                h-11 rounded-md border border-gray-300
-                focus:ring-2 focus:ring-amber-600 outline-0 font-bold
-                "
-                onInput={(e) => {
-                  e.currentTarget.value = e.currentTarget.value.toUpperCase();
-                }}
+                h-11 rounded-md border border-(--gray)
+                focus:ring-2 focus:ring-(--focus)
+                outline-0 font-bold
+              "
+              onInput={(e) => {
+                e.currentTarget.value = e.currentTarget.value.toUpperCase();
+              }}
+            />
+          </div>
+        )}
+
+        {usernameVerified && (
+          <div className="mt-8 flex flex-col gap-1 mb-5">
+            {codeVerified && (
+              <p className="text-sm font-semibold text-(--focus)">
+                ✔ Email verified successfully
+              </p>
+            )}
+
+            <div className="flex gap-3 mb-2.5">
+              <button
+                type="button"
+                onClick={requestCode}
+                className="flex-1 rounded-md bg-(--focus) py-2 font-semibold text-(--white) hover:bg-(--secondary)"
+              >
+                Resend Code
+              </button>
+
+              <button
+                type="button"
+                onClick={verifyCode}
+                className="flex-1 rounded-md bg-(--dark-gray) py-2 font-semibold text-(--white) hover:bg-(--dark-gray)"
+              >
+                Verify
+              </button>
+            </div>
+
+            <div className="mt-2 flex flex-col gap-5">
+              <Field
+                ref={passRef}
+                id="password"
+                label="New password"
+                type="password"
+              />
+              <Field
+                ref={confPassRef}
+                id="confirm"
+                label="Confirm new password"
+                type="password"
               />
             </div>
-          )}
 
-          {usernameVerified && (
-            <div className="mt-8 flex flex-col gap-1 mb-5">
-              {codeVerified && (
-                <p className="text-sm font-semibold text-green-600">
-                  ✔ Email verified successfully
-                </p>
-              )}
-
-              <div className="flex gap-3 mb-2.5">
-                <button
-                  type="button"
-                  onClick={requestCode}
-                  className="flex-1 rounded-md bg-amber-600 py-2 font-semibold text-white hover:bg-amber-700"
-                >
-                  Resend Code
-                </button>
-
-                <button
-                  type="button"
-                  onClick={verifyCode}
-                  className="flex-1 rounded-md bg-gray-800 py-2 font-semibold text-white hover:bg-gray-900"
-                >
-                  Verify
-                </button>
-              </div>
-
-              <div className="mt-2 flex flex-col gap-5">
-                <Field
-                  ref={passRef}
-                  id="password"
-                  label="New password"
-                  type="password"
-                  // placeholder="••••••••"
-                  />
-                <Field
-                  ref={confPassRef}
-                  id="confirm"
-                  label="Confirm new password"
-                  type="password"
-                  // placeholder="••••••••"
-                  />
-              </div>
-              {codeVerified && (
-                <button
-                  type="button"
-                  onClick={resetPassword}
-                  className="
-                  mt-2 rounded-md bg-amber-700 py-3
-                  text-lg font-bold text-white
-                  hover:bg-amber-800
+            {codeVerified && (
+              <button
+                type="button"
+                onClick={resetPassword}
+                className="
+                  mt-2 rounded-md bg-(--secondary) py-3
+                  text-lg font-bold text-(--white)
+                  hover:bg-(--primary)
                 "
-                >
-                  Reset password
-                </button>
-              )}
-            </div>
-          )}
+              >
+                Reset password
+              </button>
+            )}
+          </div>
+        )}
 
-          {error && (
-            <p className="text-center text-sm font-medium text-red-500">
-              {error}
-            </p>
-          )}
-        </div>
+        {error && (
+          <p className="text-center text-sm font-medium text-(--danger)">
+            {error}
+          </p>
+        )}
       </div>
-    </>
-  )
+    </div>
+  </>
+);
+
 }

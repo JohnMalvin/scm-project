@@ -10,13 +10,16 @@ type FieldProps = {
   id: string;
   placeholder?: string;
 };
-
 const Field = forwardRef<HTMLInputElement, FieldProps>(
   ({ label, type, id, placeholder }, ref) => (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-sm font-semibold text-gray-700">
+      <label
+        htmlFor={id}
+        className="text-sm font-semibold text-(--dark-gray)"
+      >
         {label}
       </label>
+
       <input
         ref={ref}
         id={id}
@@ -24,14 +27,19 @@ const Field = forwardRef<HTMLInputElement, FieldProps>(
         placeholder={placeholder}
         autoComplete="off"
         className="
-          h-11 rounded-md border border-gray-300 px-3
-          text-sm focus:outline-none
-          focus:ring-2 focus:ring-amber-600
+          h-11 rounded-md px-3 text-sm
+          border border-(--gray)
+          text-(--dark-gray)
+          bg-(--white)
+          focus:outline-none
+          focus:ring-2 focus:ring-(--focus)
+          placeholder:text-(--gray)
         "
       />
     </div>
   )
 );
+
 
 Field.displayName = "Field";
 
@@ -67,40 +75,41 @@ export default function LoginPage() {
 
   const login = async (identifier: string, password: string) => {
     try {
-        setLoading(true);
+      setLoading(true);
 
-        const res = await fetch("/api/v1/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ identifier, password }),
-        });
+      const res = await fetch("/api/v1/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ identifier, password }),
+      });
 
-        const data = await res.json();
+      const data = await res.json();
 
-        if (!res.ok) {
-            setError(data.error || "Invalid credentials");
-            return;
-        }
+      if (!res.ok) {
+        setError(data.error || "Invalid credentials");
+        return;
+      }
 
-        router.push("/dashboard");
+      router.push("/dashboard");
     } catch {
-        setError("Network error. Please try again");
+      setError("Network error. Please try again");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
   /* -------------------- UI -------------------- */
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-gray-100 px-4">
-      <div className="w-full max-w-md rounded-xl bg-white shadow-lg p-8">
-        <h1 className="text-3xl font-extrabold text-center text-amber-800">
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-md rounded-xl bg-(--white) shadow-lg p-8">
+        <h1 className="text-3xl font-extrabold text-center">
           Welcome back
         </h1>
-        <p className="mt-1 text-center text-sm text-gray-500">
+
+        <p className="mt-1 text-center text-sm text-(--secondary)">
           Log in to continue 🔐
         </p>
 
@@ -125,34 +134,37 @@ export default function LoginPage() {
             onClick={validateLogin}
             disabled={loading}
             className="
-              mt-2 rounded-md bg-amber-700 py-3
-              text-lg font-bold text-white
-              hover:bg-amber-800 disabled:opacity-70
-            "
+            mt-2 rounded-md py-3
+            text-lg font-bold
+            bg-(--secondary)
+            text-(--white)
+            hover:bg-(--primary)
+            disabled:opacity-70
+          "
           >
             {loading ? "Logging in..." : "Log In"}
           </button>
 
           {error && (
-            <p className="text-center text-sm font-medium text-red-500">
+            <p className="text-center text-sm font-medium text-(--danger)">
               {error}
             </p>
           )}
 
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-(--secondary)">
             Don’t have an account?{" "}
             <button
               onClick={() => router.push("/signup")}
-              className="font-semibold text-amber-700 hover:underline"
+              className="font-semibold text-(--secondary) hover:underline"
             >
               Sign up
             </button>
           </p>
 
-            <p className="text-left text-sm text-gray-500 -mb-5 -ml-3">
+          <p className="text-left text-sm text-(--secondary) -mb-5 -ml-3">
             <button
               onClick={() => router.push("/forgetPassword")}
-              className=" text-amber-700 hover:underline"
+              className="text-(--secondary) hover:underline"
             >
               Forget password?
             </button>

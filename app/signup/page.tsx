@@ -14,7 +14,10 @@ type FieldProps = {
 const Field = forwardRef<HTMLInputElement, FieldProps>(
   ({ label, type, id, placeholder }, ref) => (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-sm font-semibold text-gray-700">
+      <label
+        htmlFor={id}
+        className="text-sm font-semibold text-(--dark-gray)"
+      >
         {label}
       </label>
       <input
@@ -24,14 +27,15 @@ const Field = forwardRef<HTMLInputElement, FieldProps>(
         placeholder={placeholder}
         autoComplete="off"
         className="
-          h-11 rounded-md border border-gray-300 px-3
+          h-11 rounded-md border border-(--gray) px-3
           text-sm focus:outline-none
-          focus:ring-2 focus:ring-amber-600
+          focus:ring-2 focus:ring-(--focus)
         "
       />
     </div>
   )
 );
+
 
 Field.displayName = "Field";
 
@@ -148,20 +152,23 @@ export default function SignupPage() {
   /* -------------------- UI -------------------- */
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-gray-100 px-4">
-      <div className="w-full max-w-md rounded-xl bg-white shadow-lg p-8">
-        <h1 className="text-3xl font-extrabold text-center text-amber-800">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-(--background)">
+      <div className="w-full max-w-md rounded-xl bg-(--white) shadow-lg p-8">
+        <h1 className="text-3xl font-extrabold text-center text-(--primary)">
           Create your account
         </h1>
-        <p className="mt-1 text-center text-sm text-gray-500">
+
+        <p className="mt-1 text-center text-sm text-(--dark-gray)">
           Start your journey with us 🚀
         </p>
 
         <div className="mt-8 flex flex-col gap-5">
           {/* Step 1 */}
-
           <div className="flex flex-col gap-1">
-            <label htmlFor="username" className="text-sm font-semibold text-gray-700">
+            <label
+              htmlFor="username"
+              className="text-sm font-semibold text-(--dark-gray)"
+            >
               username
             </label>
             <input
@@ -171,12 +178,12 @@ export default function SignupPage() {
               placeholder="yourname"
               autoComplete="off"
               className="
-                h-11 rounded-md border border-gray-300 px-3
+                h-11 rounded-md border border-(--gray) px-3
                 text-sm focus:outline-none
-                focus:ring-2 focus:ring-amber-600
-                "
+                focus:ring-2 focus:ring-(--focus)
+              "
               onInput={(e) => {
-                  e.currentTarget.value = e.currentTarget.value.toLowerCase();
+                e.currentTarget.value = e.currentTarget.value.toLowerCase();
               }}
             />
           </div>
@@ -200,8 +207,9 @@ export default function SignupPage() {
               maxLength={6}
               className="
                 uppercase tracking-widest text-center
-                h-11 rounded-md border border-gray-300
-                focus:ring-2 focus:ring-amber-600 outline-0 font-bold
+                h-11 rounded-md border border-(--gray)
+                focus:ring-2 focus:ring-(--focus)
+                outline-0 font-bold
               "
               onInput={(e) => {
                 e.currentTarget.value = e.currentTarget.value.toUpperCase();
@@ -210,7 +218,7 @@ export default function SignupPage() {
           )}
 
           {codeVerified && (
-            <p className="text-sm font-semibold text-green-600">
+            <p className="text-sm font-semibold text-(--focus)">
               ✔ Email verified successfully
             </p>
           )}
@@ -219,7 +227,7 @@ export default function SignupPage() {
             <button
               type="button"
               onClick={requestCode}
-              className="flex-1 rounded-md bg-amber-600 py-2 font-semibold text-white hover:bg-amber-700"
+              className="flex-1 rounded-md bg-(--focus) py-2 font-semibold text-(--white) hover:bg-(--secondary)"
             >
               {codeRequested ? "Resend Code" : "Send Code"}
             </button>
@@ -228,7 +236,7 @@ export default function SignupPage() {
               <button
                 type="button"
                 onClick={verifyCode}
-                className="flex-1 rounded-md bg-gray-800 py-2 font-semibold text-white hover:bg-gray-900"
+                className="flex-1 rounded-md bg-(--dark-gray) py-2 font-semibold text-(--white) hover:bg-(--dark-gray)"
               >
                 Verify
               </button>
@@ -241,40 +249,38 @@ export default function SignupPage() {
             id="password"
             label="Password"
             type="password"
-            // placeholder="••••••••"
           />
           <Field
             ref={confPassRef}
             id="confirm"
             label="Confirm password"
             type="password"
-            // placeholder="••••••••"
           />
 
           <button
             type="button"
             onClick={validateSignUp}
             className="
-              mt-2 rounded-md bg-amber-700 py-3
-              text-lg font-bold text-white
-              hover:bg-amber-800
+              mt-2 rounded-md bg-(--secondary) py-3
+              text-lg font-bold text-(--white)
+              hover:bg-(--primary)
             "
           >
             Create Account
           </button>
 
-          <p className="text-center text-sm text-gray-500">
+          <p className="text-center text-sm text-(--dark-gray)">
             Already have an account?{" "}
             <button
               onClick={() => router.push("/login")}
-              className="font-semibold text-amber-700 hover:underline"
+              className="font-semibold text-(--secondary) hover:underline"
             >
               Log in
             </button>
           </p>
 
           {error && (
-            <p className="text-center text-sm font-medium text-red-500">
+            <p className="text-center text-sm font-medium text-(--danger)">
               {error}
             </p>
           )}
@@ -282,4 +288,5 @@ export default function SignupPage() {
       </div>
     </div>
   );
+
 }
