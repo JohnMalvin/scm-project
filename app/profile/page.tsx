@@ -22,28 +22,40 @@ export default function Profile() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 flex flex-col gap-6">
+    <div className="max-w-4xl mx-auto p-6 flex flex-col gap-6 relative">
 
       {/* Profile Header */}
-      <div className="flex flex-col md:flex-row items-center md:items-start gap-6 bg-(--white) rounded-lg shadow-md px-6 py-8">
-        
-              {/* Profile Image */}
-        <section>
-                  
-            <div className="relative w-32 h-32 md:w-40 md:h-40 flex-shrink-0 ">
-                <Image
-                    src="/profile.jpg"
-                    alt="Profile Picture"
-                    fill
-                    className="rounded-full object-cover border-4 border-(--focus)"
-                    />
-            </div>
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-6 bg-(--white) rounded-lg shadow-md px-6 py-8 relative">
 
-            <div className="mt-6 justify-center hidden md:flex gap-4 ">
-                <button className="px-6 py-2 w-full bg-(--focus) text-(--white) rounded-lg hover:bg-(--secondary) transition">
-                    Message
-                </button>
-            </div>    
+        {/* Edit Profile Button */}
+        <div className="absolute top-4 right-4 flex items-center gap-1 px-2 py-1 rounded-xl border-2 cursor-pointer hover:bg-(--surface) transition">
+          <Image
+            src="/edit.svg"
+            alt="Edit Profile"
+            width={20}
+            height={20}
+          />
+          <p className="hidden sm:block text-xs text-(--text-main)">Edit Profile</p>
+
+        </div>
+
+        {/* Profile Image */}
+        <section>
+          <div className="relative w-32 h-32 md:w-40 md:h-40 shrink-0">
+            <Image
+              src="/default-avatar-seller.png"
+              alt="Profile Picture"
+              fill
+              className="rounded-full object-cover border-4 border-(--focus)"
+            />
+          </div>
+
+          {/* Desktop Message Button */}
+          <div className="mt-6 justify-center hidden md:flex gap-4">
+            <button className="px-6 py-2 w-full bg-(--focus) text-(--white) rounded-lg hover:bg-(--secondary) transition">
+              Message
+            </button>
+          </div>    
         </section>
 
         {/* Info */}
@@ -67,11 +79,12 @@ export default function Profile() {
             </div>
           </div>
 
-        <div className="mt-6 flex justify-center md:justify-start gap-4 md:hidden">
-            <button className="px-6 py-2 bg-(--focus) text-(--white) rounded-lg hover:bg-(--secondary) transition lg:hidden">
-                Message
+          {/* Mobile Message Button */}
+          <div className="mt-6 flex justify-center md:justify-start gap-4 md:hidden">
+            <button className="px-6 py-2 bg-(--focus) text-(--white) rounded-lg hover:bg-(--secondary) transition">
+              Message
             </button>
-        </div> 
+          </div> 
 
           {/* Subscribed Categories */}
           <SubscribedCategories 
