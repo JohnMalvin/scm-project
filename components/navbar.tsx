@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import Button from "./button"
+import Alert from "./alert"
 
 export default function Navbar() {
   const router = useRouter();
@@ -32,7 +33,7 @@ export default function Navbar() {
   
   return (
     <>
-      <nav className="relative z-50 flex items-center justify-between px-6 py-4">
+      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/">
           <Image src="/logo.svg" alt="Logo" width={90} height={90} priority />

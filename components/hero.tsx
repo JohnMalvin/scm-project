@@ -1,7 +1,13 @@
 import Button from "./button";
 
+type heroProps = {
+    setAlert: React.Dispatch<React.SetStateAction<{
+        type: "INFO" | "SUCCESS" | "WARNING";
+        message: string;
+    } | null>>;
+}
 
-export default function Hero() {
+export default function Hero({ setAlert }: heroProps) {
 
 
     return (
@@ -13,7 +19,9 @@ export default function Hero() {
                     label="Click Me"
                     afterLabel="loading..."
                     focus="BLUE"
-                    onclick={() => console.log("bruhh")}
+                    onclick={() => setAlert(
+                        {type: "WARNING", message: "JSDFBAJKDBFJKBADJFJK AS JKFA SMN CA DJ JA KS A."}
+                    )}
                 />
             </section>
         </>
