@@ -1,3 +1,4 @@
+import Button from "./button";
 
 
 export default function Hero() {
@@ -8,7 +9,12 @@ export default function Hero() {
             <section
                 className="bg-amber-400"
             >
-                bruhhh
+                <Button
+                    label="Click Me"
+                    afterLabel="loading..."
+                    focus="BLUE"
+                    onclick={() => console.log("bruhh")}
+                />
             </section>
         </>
     )

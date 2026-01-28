@@ -7,8 +7,10 @@ export default function Home() {
   // const router = useRouter();
   return (
     <>
-      <Navbar />
-      <Hero />
+      <div className="max-w-screen-2xl m-auto">
+        <Navbar />
+        <Hero />
+      </div>
     </>
   );
 }

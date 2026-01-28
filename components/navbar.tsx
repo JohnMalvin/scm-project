@@ -3,9 +3,11 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import Logout from "@/app/logout/page"
+import { useRouter } from "next/navigation"
+import Button from "./button"
 
 export default function Navbar() {
+  const router = useRouter();
   const [open, setOpen] = useState(false)
 
   const clickables = [
@@ -13,7 +15,21 @@ export default function Navbar() {
     { label: "Listings", href: "/link2" },
     { label: "Profile", href: "/" },
   ]
+  
+  const handleLogout = async () => {
+      try {
+          await fetch('/api/v1/auth/logout', {
+              method: 'POST',
+              credentials: 'include'
+          });
 
+          router.push("/signup");
+      } catch  {
+          alert('Logout failed');
+      }
+  };
+  
+  
   return (
     <>
       <nav className="relative z-50 flex items-center justify-between px-6 py-4">
@@ -52,7 +68,12 @@ export default function Navbar() {
             <Link href="/">
               <Image src="/notification.svg" alt="Logo" width={30} height={30} priority />
             </Link>
-            <Logout />
+            <Button
+                label="Logout"
+                afterLabel="Logout"
+                onclick={handleLogout}
+                focus="DARK"
+            />
           </section>
         )}
         {/* Mobile toggle button */}
@@ -86,7 +107,12 @@ export default function Navbar() {
             </Link>
           ))}
 
-          <Logout />
+          <Button
+            label="Logout"
+            afterLabel="Logout"
+            onclick={handleLogout}
+            focus="DARK"
+          />
         </div>
       )}
     </>
