@@ -1,8 +1,10 @@
 "use client";
 import Alert from "@/components/alert";
 import Hero from "@/components/hero";
+import Listings from "@/components/listings";
 // import { useRouter } from "next/navigation";
 import Navbar from "@/components/navbar";
+import SearchBar from "@/components/searchBar";
 import { useEffect, useState } from "react";
 
 type alertProps = {
@@ -31,9 +33,11 @@ export default function Home() {
           />
         )}
         <Navbar />
-        <Hero
+        {/* <Hero
           setAlert={setAlert}
-        />
+        /> */}
+        <SearchBar />
+        <Listings/>
       </div>
     </>
   );
