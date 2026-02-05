@@ -5,7 +5,7 @@ type ListDataProps = {
 
 export default function ListData({ id, onBack }: ListDataProps) {
     return (
-        <div className="w-full">
+        <div className="w-full h-full top-0 z-10 rounded-lg bg-(--white) shadow-lg">
             {/* Back button (mobile only) */}
             <button
                 onClick={onBack}
@@ -14,7 +14,7 @@ export default function ListData({ id, onBack }: ListDataProps) {
                 ← Back
             </button>
 
-            <div className="bg-red-500 border-2 p-5 rounded-xl">
+            <div className="p-5">
                 <h2 className="text-xl font-bold mb-2">
                     Listing #{id}
                 </h2>

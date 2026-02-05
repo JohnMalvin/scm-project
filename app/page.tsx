@@ -33,9 +33,6 @@ export default function Home() {
           />
         )}
         <Navbar />
-        {/* <Hero
-          setAlert={setAlert}
-        /> */}
         <SearchBar />
         <Listings/>
       </div>

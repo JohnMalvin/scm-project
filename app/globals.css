@@ -44,7 +44,9 @@
     );
     color: var(--foreground);
     font-family: Arial, Helvetica, sans-serif;
+    /* overflow: hidden; */
   }
+  
 }
 
 
@@ -105,3 +107,12 @@
   }
 }
 
+@layer utilities {
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE & Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
+}

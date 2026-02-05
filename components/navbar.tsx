@@ -33,7 +33,7 @@ export default function Navbar() {
   
   return (
     <>
-      <nav className="sticky top-0 z-40 flex items-center justify-between px-6 py-4">
+      <nav className=" top-0 z-40 flex items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/">
           <Image src="/logo.svg" alt="Logo" width={90} height={90} priority />
