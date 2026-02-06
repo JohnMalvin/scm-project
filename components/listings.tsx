@@ -47,7 +47,7 @@ export default function Listings() {
 
     return (
         <>
-            <div className="flex mx-3 gap-0 h-[calc(100vh)]">
+            <div className="flex mx-6 gap-0 h-[calc(100vh)]">
                 {/* Cards list */}
                 <section
                     className={`
@@ -57,7 +57,7 @@ export default function Listings() {
                         `}
                         >
                     {/* Example card */}
-                    <div className={`flex flex-col gap-4 ${innerScroll ? "overflow-scroll no-scrollbar" : "overflow-hidden"} h-full p-4`}>
+                    <div className={`flex flex-col gap-4 ${innerScroll ? "overflow-scroll no-scrollbar" : "overflow-hidden"} h-full pt-4 md:pr-4`}>
                         <ListCard
                             active={selectedId === 1}
                             title="Custom 48V 20Ah Lithium Battery Pack for E-Bike"
@@ -79,7 +79,7 @@ export default function Listings() {
                             status="SCHEDULED"
                             category={["Electronics & PCBA", "Mechanical & CNC Manufacturing", "Injection Molding & Plastics", "Industrial Automation", "Automotive & EV Components", "Battery & Power Systems", "IoT & Embedded Systems", "Materials & Raw Components",]}
                             onClick={() => setSelectedId(2)}
-                        />
+                            />
 
                         <ListCard
                             active={selectedId === 3}
@@ -87,11 +87,32 @@ export default function Listings() {
                             company="CIO Network Pte Ltd"
                             location="Indonesia"
                             deadline="Aug 30, 2023"
-                            budget="Rp. 20.000.000"
                             status="CLOSED"
                             category={["bruhh", "ashdj", "ajhj"]}
                             onClick={() => setSelectedId(3)}
-                        />
+                            />
+
+                        <ListCard
+                            active={selectedId === 3}
+                            title="Fully Remote – Delegate Sales Manager - Indonesia"
+                            company="CIO Network Pte Ltd"
+                            location="Indonesia"
+                            deadline="Aug 30, 2023"
+                            status="CLOSED"
+                            category={["bruhh", "ashdj", "ajhj"]}
+                            onClick={() => setSelectedId(3)}
+                            />
+
+                        <ListCard
+                            active={selectedId === 3}
+                            title="Fully Remote – Delegate Sales Manager - Indonesia"
+                            company="CIO Network Pte Ltd"
+                            location="Indonesia"
+                            deadline="Aug 30, 2023"
+                            status="CLOSED"
+                            category={["bruhh", "ashdj", "ajhj"]}
+                            onClick={() => setSelectedId(3)}
+                            />
                     </div>    
 
                 </section>
@@ -101,15 +122,22 @@ export default function Listings() {
                     className={`
                         flex-1
                         ${selectedId ? "flex" : "hidden md:flex"}
-                    `}
-                >
+                        `}
+                        >
                     {selectedId && (
                         <div
-                            className={`pt-4 transition-all duration-100 ease-in-out ${innerScroll ? "overflow-scroll no-scrollbar" : "overflow-hidden"}`}
+                        className={`mb-5 min-h-0 pt-4 transition-all duration-100 ease-in-out ${innerScroll ? "overflow-scroll no-scrollbar" : "overflow-hidden"}`}
                         >
                             <ListData
                                 id={selectedId}
                                 onBack={() => setSelectedId(null)}
+                                status="SCHEDULED"
+                                budget="Rp. 20.000.000"
+                                company="CIO Network Pte Ltd"
+                                location="Indonesia"
+                                deadline="Aug 30, 2023"
+                                category={["Electronics & PCBA", "Mechanical & CNC Manufacturing", "Injection Molding & Plastics", "Industrial Automation", "Automotive & EV Components", "Battery & Power Systems", "IoT & Embedded Systems", "Materials & Raw Components",]}
+                                star="4.8"
                             />
                         </div>
                     )}

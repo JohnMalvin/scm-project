@@ -1,4 +1,5 @@
 import Image from "next/image"
+import ListProperties from "./listProperties"
 
 type Status = "OPEN" | "SCHEDULED" | "CLOSED"
 
@@ -23,7 +24,7 @@ const STATUS_CONFIG: Record<Status, {
         className: "text-green-700 border-(--success)",
     },
     SCHEDULED: {
-        label: "Upcoming",
+        label: "Scheduled",
         className: "text-yellow-700 border-(--warning)",
     },
     CLOSED: {
@@ -51,13 +52,13 @@ export default function ListCard({
             className={`
                 cursor-pointer
                 bg-white
-                ${active ? "border-2 border-(--focus)" : "border border-gray-200"}
+                ${active ? "border-2 border-(--focus) scale-102 ml-2" : "border border-gray-200 scale-100"}
                 rounded-2xl
                 p-5
                 shadow-sm
                 hover:shadow-md
                 transition
-                flex justify-between gap-4
+                flex justify-between gap-10
             `}
         >
             {/* LEFT */}
@@ -82,32 +83,20 @@ export default function ListCard({
                     )}
                 </div>
 
-                <div className="text-sm text-gray-600 gap-1 flex flex-col">
-                    <span className="flex items-center">
-                        <Image src="/company.svg" alt="company" width={15} height={15} className="mx-2" />
-                        <p>{company}</p>
-                    </span>
-
-                    <span className="flex items-center">
-                        <Image src="/location.svg" alt="location" width={15} height={15} className="mx-2" />
-                        <p>{location}</p>
-                    </span>
-
-                    <span className="flex items-center">
-                        <Image src="/deadline.svg" alt="deadline" width={15} height={15} className="mx-2" />
-                        <p>{deadline}</p>
-                    </span>
-                </div>
+                {/* properties */}
+                <ListProperties company={company} location={location} deadline={deadline} />
 
                 {category && (
                     <div className="flex items-center gap-2 mt-2 flex-wrap">
-                        {category.map((cat, index) => (
-                            <span
-                                key={index}
-                                className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-md"
-                            >
-                                {cat}
-                            </span>
+                        {category.map((cat, index: number) => (
+                            index < 5 && (
+                                <span
+                                    key={index}
+                                    className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-md"
+                                    >
+                                    {cat}
+                                </span>
+                            )
                         ))}
                     </div>
                 )}
@@ -128,11 +117,11 @@ export default function ListCard({
 
             {/* RIGHT */}
             <div className="flex shrink-0 flex-col items-end gap-3 text-gray-500">
-                <button>
+                <button className="cursor-pointer">
                     <Image src="/bookmark.svg" alt="bookmark" width={20} height={20} />
                 </button>
 
-                <button>
+                <button className="cursor-pointer">
                     <Image src="/share.svg" alt="share" width={20} height={20} />
                 </button>
             </div>

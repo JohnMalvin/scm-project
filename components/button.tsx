@@ -5,7 +5,7 @@ type ButtonProps = {
     afterLabel: string;
     onclick: () => void;
     focus: "FOCUS" | "DARK" | "BLUE";
-    span?: string;
+    span?: boolean;
 }
 export default function Button({label, afterLabel, onclick, focus, span}: ButtonProps) {
     const [labels, setLabels] = useState<string>(label);
@@ -18,7 +18,7 @@ export default function Button({label, afterLabel, onclick, focus, span}: Button
                     setLabels(afterLabel);
                 }}
                 className={`
-                ${span && span}
+                ${span && span === true}
                 px-6 py-2 
                 font-semibold 
                 text-(--white)
