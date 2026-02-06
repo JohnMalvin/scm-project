@@ -47,7 +47,7 @@ export default function Listings() {
 
     return (
         <>
-            <div className="flex mx-6 gap-0 h-[calc(100vh)]">
+            <div className="flex mx-3 gap-0 h-[calc(100vh)]">
                 {/* Cards list */}
                 <section
                     className={`
@@ -60,39 +60,37 @@ export default function Listings() {
                     <div className={`flex flex-col gap-4 ${innerScroll ? "overflow-scroll no-scrollbar" : "overflow-hidden"} h-full p-4`}>
                         <ListCard
                             active={selectedId === 1}
-                            title="Fully Remote – Delegate Sales Manager - Indonesia"
-                            company="CIO Network Pte Ltd"
+                            title="Custom 48V 20Ah Lithium Battery Pack for E-Bike"
+                            company="Urban Mobility Solutions"
                             location="Indonesia"
-                            salary="Rp. 15.000.000 - Rp. 20.000.000 a month"
-                            type="Full-time"
+                            deadline="Jan 15, 2024"
+                            budget="Rp. 1.200.000 / unit"
+                            status="CLOSED"
+                            category={["Battery Pack", "E-Mobility", "Custom Manufacturing"]}
                             onClick={() => setSelectedId(1)}
                         />
                         <ListCard
                             active={selectedId === 2}
-                            title="Fully Remote – Delegate Sales Manager - Indonesia"
-                            company="CIO Network Pte Ltd"
+                            title="Custom 48V 20Ah Lithium Battery Pack for E-Bike"
+                            company="Urban Mobility Solutions"
                             location="Indonesia"
-                            salary="Rp. 15.000.000 - Rp. 20.000.000 a month"
-                            type="Full-time"
+                            deadline="Jan 15, 2024"
+                            budget="Rp. 1.200.000 / unit"
+                            status="SCHEDULED"
+                            category={["Electronics & PCBA", "Mechanical & CNC Manufacturing", "Injection Molding & Plastics", "Industrial Automation", "Automotive & EV Components", "Battery & Power Systems", "IoT & Embedded Systems", "Materials & Raw Components",]}
                             onClick={() => setSelectedId(2)}
                         />
+
                         <ListCard
-                            active={selectedId === 2}
+                            active={selectedId === 3}
                             title="Fully Remote – Delegate Sales Manager - Indonesia"
                             company="CIO Network Pte Ltd"
                             location="Indonesia"
-                            salary="Rp. 15.000.000 - Rp. 20.000.000 a month"
-                            type="Full-time"
-                            onClick={() => setSelectedId(2)}
-                        />
-                        <ListCard
-                            active={selectedId === 2}
-                            title="Fully Remote – Delegate Sales Manager - Indonesia"
-                            company="CIO Network Pte Ltd"
-                            location="Indonesia"
-                            salary="Rp. 15.000.000 - Rp. 20.000.000 a month"
-                            type="Full-time"
-                            onClick={() => setSelectedId(2)}
+                            deadline="Aug 30, 2023"
+                            budget="Rp. 20.000.000"
+                            status="CLOSED"
+                            category={["bruhh", "ashdj", "ajhj"]}
+                            onClick={() => setSelectedId(3)}
                         />
                     </div>    
 
