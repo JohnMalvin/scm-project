@@ -33,7 +33,7 @@ export default function Navbar() {
   
   return (
     <>
-      <nav className=" top-0 z-40 flex items-center justify-between px-6 py-4">
+      <nav className="top-0 z-50 flex items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/">
           <Image src="/logo.svg" alt="Logo" width={90} height={90} priority />
@@ -96,7 +96,7 @@ export default function Navbar() {
 
       {/* Fullscreen mobile menu */}
       {open && (
-        <div className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 bg-(--surface) md:hidden">
+        <div className="fixed inset-0 z-20 top-14 flex flex-col items-center justify-center gap-8 bg-(--surface) md:hidden">
           {clickables.map((clickable) => (
             <Link
               key={clickable.href}
